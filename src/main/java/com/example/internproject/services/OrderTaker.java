@@ -84,7 +84,7 @@ public class OrderTaker {
 
         Queue.SendMessage(payload);
         try {
-            Queue.ReadMessage();
+            //Queue.ReadMessage();
         }
         catch (Exception e)
         {

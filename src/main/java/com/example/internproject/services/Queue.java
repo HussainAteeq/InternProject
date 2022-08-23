@@ -17,18 +17,7 @@ public class Queue {
 
     static String queueUrl="http://localhost:4566/000000000000/food_queue";
 
-    public static void PublishTopic() {
-        AmazonSNS snsClient = AmazonSNSClientBuilder.standard()
-                .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration("http://localhost:4566", "us-east-2"))
-                .build();
-        final String msg = "Hey, this is second check message, Saad Ali!!";
-        final PublishRequest publishRequest = new PublishRequest("arn:aws:sns:us-east-2:000000000000:topic1", msg);
-        final PublishResult publishResponse = snsClient.publish((publishRequest));
 
-// Print the MessageId of the message.
-        System.out.println("Your message has been published to the given topic :)");
-        System.out.println("MessageId: " + publishResponse.getMessageId());
-    }
 
     public static void SendMessage(String msg){
         try {
@@ -75,10 +64,12 @@ public class Queue {
 
 
         ReceiveMessageRequest req=new ReceiveMessageRequest(queueUrl).withMaxNumberOfMessages(30).withVisibilityTimeout(1);
-        List<Message> messages=new ArrayList<>();
+        List<Message> messages;
         try{
-        Thread.sleep(1500);
-         messages=sqs.receiveMessage(req).getMessages();
+
+            messages=sqs.receiveMessage(req).getMessages();
+            Thread.sleep(1500);
+
 
 
 
@@ -89,6 +80,7 @@ public class Queue {
                 System.out.println(messages.get(i).getBody().toString());
                 //ii++;
             }
+            return messages;
         }
         catch(Exception e)
         {
@@ -97,7 +89,7 @@ public class Queue {
             System.out.println("Queue Scanned Successfully!");
         }
 
-        return messages;
+        return null;
     }
 
     //for reading 1 message
@@ -118,18 +110,18 @@ public class Queue {
         }
         return message;
     }
-    public static void DeleteMessage(){
-        ReceiveMessageRequest req=new ReceiveMessageRequest().withQueueUrl(queueUrl).withVisibilityTimeout(10);
-        //List<Message> messages=sqs.receiveMessage(req).getMessages();
-        //DeleteMessageResult res= sqs.deleteMessage(queueUrl,messages.get(0).getReceiptHandle());
-        for (int i=0;i<10;i++){
-            System.out.println("Deleting Message!");
-
-            List<Message> messages=sqs.receiveMessage(req).getMessages();
-            DeleteMessageResult res= sqs.deleteMessage(queueUrl,messages.get(0).getReceiptHandle());
-            System.out.println("Message Deleted Successfully!");
-        }
-    }
+//    public static void DeleteMessage(){
+//        ReceiveMessageRequest req=new ReceiveMessageRequest().withQueueUrl(queueUrl).withVisibilityTimeout(10);
+//        //List<Message> messages=sqs.receiveMessage(req).getMessages();
+//        //DeleteMessageResult res= sqs.deleteMessage(queueUrl,messages.get(0).getReceiptHandle());
+//        for (int i=0;i<10;i++){
+//            System.out.println("Deleting Message!");
+//
+//            List<Message> messages=sqs.receiveMessage(req).getMessages();
+//            DeleteMessageResult res= sqs.deleteMessage(queueUrl,messages.get(0).getReceiptHandle());
+//            System.out.println("Message Deleted Successfully!");
+//        }
+//    }
 
     //for deleting 1 message
 
